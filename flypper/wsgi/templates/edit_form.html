@@ -1,0 +1,113 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">Edit an active flag</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <form action="./edit" method="post">
+    <div class="modal-body">
+      <div class="mb-3">
+        <label for="editFlagName" class="form-label">Flag name</label>
+        <input
+          type="text"
+          class="form-control disabled"
+          id="editFlagName"
+          name="flag_name"
+          value="fr_api.prod.flag_name"
+          readonly
+        />
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          id="editEnabled"
+          name="enabled"
+          role="switch"
+          checked
+        />
+        <label class="form-check-label" for="editEnabled">Enabled</label>
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          id="editEnabledForActors"
+          name="enabled_for_actors"
+          role="switch"
+          data-bs-toggle="collapse"
+          href="#editEnabledForActorsDetails"
+          checked
+        />
+        <label class="form-check-label" for="editEnabledForActors">Enabled for actors</label>
+      </div>
+      <div class="collapse show mb-3" id="editEnabledForActorsDetails">
+        <div class="card card-body">
+          <div class="mb-3">
+            <label for="editEnabledForActorsKey" class="form-label">Actor key</label>
+            <input
+              type="text"
+              class="form-control"
+              id="editEnabledForActorsKey"
+              name="enabled_for_actors_key"
+              placeholder="user_id"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="editEnabledForActorsIds" class="form-label">Actor IDs</label>
+            <textarea
+              class="form-control"
+              id="editEnabledForActorsIds"
+              name="enabled_for_actors_ids"
+              placeholder="One Actor ID per line"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          id="editEnabledForAPercentageOfActors"
+          name="enabled_for_a_percentage_of_actors"
+          role="switch"
+          data-bs-toggle="collapse"
+          href="#editEnabledForAPercentageOfActorsDetails"
+          checked
+        />
+        <label class="form-check-label" for="editEnabledForAPercentageOfActors">Enabled for a percentage of actors</label>
+      </div>
+      <div class="collapse show mb-3" id="editEnabledForAPercentageOfActorsDetails">
+        <div class="card card-body">
+          <div class="mb-3">
+            <label for="editEnabledForAPercentageOfActorsKey" class="form-label">Actor key</label>
+            <input
+              type="text"
+              class="form-control"
+              id="editEnabledForAPercentageOfActorsKey"
+              name="enabled_for_a_percentage_of_actors_key"
+              placeholder="user_id"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="editEnabledForAPercentageOfActorsPercentage" class="form-label">Percentage</label>
+            <input
+              class="form-control"
+              id="editEnabledForAPercentageOfActorsPercentage"
+              name="enabled_for_a_percentage_of_actors_percentage"
+              type="number"
+              min="0"
+              max="100"
+              step="0.01"
+              placeholder="12.5"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close without saving</button>
+      <button type="submit" class="btn btn-primary">Save this flag</button>
+    </div>
+  </form>
+</div>
