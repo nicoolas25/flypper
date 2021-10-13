@@ -54,12 +54,17 @@ class Flag:
         if enabled_for_percentage_of_actors is None:
             return True
 
+        flag_percentage = enabled_for_percentage_of_actors["percentage"]
+
+        if flag_percentage == 100.00:
+            return True
+
         actor_id = entries.get(enabled_for_percentage_of_actors["actor_key"], None)
 
         if actor_id is None:
             return False
 
         actor_md5 = md5(actor_id.encode("utf-8")).digest()
-        actor_percentage = (int.from_bytes(actor_md5, "big") % 100_00 + 1) / 100.00
+        actor_percentage = (int.from_bytes(actor_md5, "big") % 100_00) / 100.00
 
-        return actor_percentage >= enabled_for_percentage_of_actors["percentage"]
+        return actor_percentage <= flag_percentage
