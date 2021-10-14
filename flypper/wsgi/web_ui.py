@@ -11,12 +11,16 @@ from werkzeug.utils import redirect
 from werkzeug.wrappers import Request
 from werkzeug.wrappers import Response
 
+from flypper.storage.abstract import AbstractStorage
+from flypper.storage.in_memory import InMemoryStorage
+
 def get_hostname(url):
     return url_parse(url).netloc
 
 
 class FlypperWebUI:
-    def __init__(self):
+    def __init__(self, storage: AbstractStorage):
+        self._storage = storage
         self.jinja_env = Environment(
             loader=FileSystemLoader(
                 os.path.join(os.path.dirname(__file__), "templates")
@@ -33,13 +37,36 @@ class FlypperWebUI:
         )
 
     def on_index(self, request):
-        return self.render_template("index.html")
+        return self.render_template("index.html", flags=self._storage.list())
 
     def on_edit(self, request):
+        print(request.form)
+        form = request.form
+        self._storage.upsert({
+            "name": form["flag_name"],
+            "enabled": form.get("enabled", "off") == "on",
+            "enabled_for_actors": {
+                "actor_key": form["enabled_for_actors_key"],
+                "actor_ids": [
+                    actor_id.strip()
+                    for actor_id in form["enabled_for_actors_ids"].split()
+                    if actor_id
+                ],
+            } if form.get("enabled_for_actors", "off") == "on" else None,
+            "enabled_for_percentage_of_actors": {
+                "actor_key": form["enabled_for_percentage_of_actors_key"],
+                "percentage": float(form["enabled_for_percentage_of_actors_percentage"]),
+            } if form.get("enabled_for_percentage_of_actors", "off") == "on" else None,
+            "deleted": False,
+        })
         return redirect("/")
 
     def on_edit_form(self, request):
-        return self.render_template("edit_form.html")
+        flag = self._fetch_flag(flag_name=request.args.get("flag_name", None))
+        if not flag:
+            return self.error_404()
+
+        return self.render_template("edit_form.html", flag=flag)
 
     def error_404(self):
         response = self.render_template("404.html")
@@ -68,9 +95,55 @@ class FlypperWebUI:
     def __call__(self, environ, start_response):
         return self.wsgi_app(environ, start_response)
 
+    def _fetch_flag(self, flag_name: str):
+        if not flag_name:
+            return None
+
+        flag = next(
+            (flag for flag in self._storage.list() if flag.name == flag_name),
+            None,
+        )
+        return flag
+
 
 if __name__ == "__main__":
     from werkzeug.serving import run_simple
 
-    app = FlypperWebUI()
+    storage = InMemoryStorage()
+    storage.upsert({
+        "name": "fr_api.prod.on_demand_feature",
+        "enabled": True,
+        "enabled_for_actors": {
+            "actor_key": "user_id",
+            "actor_ids": ["8", "42", "200000"],
+        },
+        "enabled_for_percentage_of_actors": None,
+        "deleted": False,
+    })
+    storage.upsert({
+        "name": "fr_api.prod.rolling_out_feature",
+        "enabled": True,
+        "enabled_for_actors": None,
+        "enabled_for_percentage_of_actors": {
+            "actor_key": "user_id",
+            "percentage": 10.00,
+        },
+        "deleted": False,
+    })
+    storage.upsert({
+        "name": "fr_api.prod.fully_rolled_out_feature",
+        "enabled": True,
+        "enabled_for_actors": None,
+        "enabled_for_percentage_of_actors": None,
+        "deleted": False,
+    })
+    storage.upsert({
+        "name": "fr_api.prod.failover_for_payments",
+        "enabled": False,
+        "enabled_for_actors": None,
+        "enabled_for_percentage_of_actors": None,
+        "deleted": False,
+    })
+
+    app = FlypperWebUI(storage=storage)
     run_simple("127.0.0.1", 5000, app, use_debugger=True, use_reloader=True)

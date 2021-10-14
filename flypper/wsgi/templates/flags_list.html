@@ -1,0 +1,49 @@
+<table class="table table-striped table-hover mb-0">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col" width="50%">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for flag in flags %}
+    <tr>
+      <td><code>{{ flag.name }}</code></td>
+      <td>
+        <span
+          data-bs-toggle="modal"
+          data-bs-target="#editForm"
+          hx-get="./edit_form?flag_name={{ flag.name }}"
+          hx-trigger="click"
+          hx-target="#editFormContent"
+        >
+          <i class="bi-wrench me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"></i>
+        </span>
+        {% if not flag.data.enabled %}
+        <span class="badge bg-secondary">Fully disabled</span>
+        {% elif flag.data.enabled_for_actors %}
+        <span class="badge bg-info" data-bs-toggle="collapse" data-bs-target="#flagListItemActorIds{{ loop.index }}">
+          Enabled for {{ flag.data.enabled_for_actors.actor_ids | length }}
+          '{{ flag.data.enabled_for_actors.actor_key }}'
+        </span>
+        <div class="collapse mt-2" id="flagListItemActorIds{{ loop.index }}">
+          <ul class="list-group">
+            {% for actor_id in flag.data.enabled_for_actors.actor_ids %}
+            <li class="list-group-item">{{ actor_id }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% elif flag.data.enabled_for_percentage_of_actors %}
+        <span class="badge bg-primary">
+          Enabled for {{ flag.data.enabled_for_percentage_of_actors.percentage }} %
+          of '{{ flag.data.enabled_for_percentage_of_actors.actor_key }}'
+        </span>
+        {% else %}
+        <span class="badge bg-success">Fully enabled</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+

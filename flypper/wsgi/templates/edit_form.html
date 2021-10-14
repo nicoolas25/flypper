@@ -12,7 +12,7 @@
           class="form-control disabled"
           id="editFlagName"
           name="flag_name"
-          value="fr_api.prod.flag_name"
+          value="{{ flag.name }}"
           readonly
         />
       </div>
@@ -23,7 +23,7 @@
           id="editEnabled"
           name="enabled"
           role="switch"
-          checked
+          {% if flag.data.enabled %}checked{% endif %}
         />
         <label class="form-check-label" for="editEnabled">Enabled</label>
       </div>
@@ -36,11 +36,11 @@
           role="switch"
           data-bs-toggle="collapse"
           href="#editEnabledForActorsDetails"
-          checked
+          {% if flag.data.enabled_for_actors %}checked{% endif %}
         />
         <label class="form-check-label" for="editEnabledForActors">Enabled for actors</label>
       </div>
-      <div class="collapse show mb-3" id="editEnabledForActorsDetails">
+      <div class="collapse {% if flag.data.enabled_for_actors %}show{% endif %} mb-3" id="editEnabledForActorsDetails">
         <div class="card card-body">
           <div class="mb-3">
             <label for="editEnabledForActorsKey" class="form-label">Actor key</label>
@@ -50,6 +50,7 @@
               id="editEnabledForActorsKey"
               name="enabled_for_actors_key"
               placeholder="user_id"
+              value="{{ flag.data.enabled_for_actors.actor_key }}"
             />
           </div>
           <div class="mb-3">
@@ -60,7 +61,8 @@
               name="enabled_for_actors_ids"
               placeholder="One Actor ID per line"
               rows="3"
-            ></textarea>
+              >{%for actor_id in flag.data.enabled_for_actors.actor_ids %}{{ actor_id }}
+{% endfor %}</textarea>
           </div>
         </div>
       </div>
@@ -69,15 +71,18 @@
           type="checkbox"
           class="form-check-input"
           id="editEnabledForAPercentageOfActors"
-          name="enabled_for_a_percentage_of_actors"
+          name="enabled_for_percentage_of_actors"
           role="switch"
           data-bs-toggle="collapse"
           href="#editEnabledForAPercentageOfActorsDetails"
-          checked
+          {% if flag.data.enabled_for_percentage_of_actors %}checked{% endif %}
         />
         <label class="form-check-label" for="editEnabledForAPercentageOfActors">Enabled for a percentage of actors</label>
       </div>
-      <div class="collapse show mb-3" id="editEnabledForAPercentageOfActorsDetails">
+      <div
+        class="collapse {% if flag.data.enabled_for_percentage_of_actors %}show{% endif %} mb-3"
+        id="editEnabledForAPercentageOfActorsDetails"
+      >
         <div class="card card-body">
           <div class="mb-3">
             <label for="editEnabledForAPercentageOfActorsKey" class="form-label">Actor key</label>
@@ -85,8 +90,9 @@
               type="text"
               class="form-control"
               id="editEnabledForAPercentageOfActorsKey"
-              name="enabled_for_a_percentage_of_actors_key"
+              name="enabled_for_percentage_of_actors_key"
               placeholder="user_id"
+              value="{{ flag.data.enabled_for_percentage_of_actors.actor_key }}"
             />
           </div>
           <div class="mb-3">
@@ -94,12 +100,13 @@
             <input
               class="form-control"
               id="editEnabledForAPercentageOfActorsPercentage"
-              name="enabled_for_a_percentage_of_actors_percentage"
+              name="enabled_for_percentage_of_actors_percentage"
               type="number"
               min="0"
               max="100"
               step="0.01"
               placeholder="12.5"
+              value="{{ flag.data.enabled_for_percentage_of_actors.percentage }}"
             />
           </div>
         </div>
