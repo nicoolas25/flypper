@@ -33,6 +33,7 @@ class FlypperWebUI:
                 Rule("/", endpoint="index", methods=["GET"]),
                 Rule("/edit_form", endpoint="edit_form", methods=["GET"]),
                 Rule("/edit", endpoint="edit", methods=["POST"]),
+                Rule("/flags", endpoint="create_flag", methods=["POST"]),
             ]
         )
 
@@ -67,6 +68,17 @@ class FlypperWebUI:
             return self.error_404()
 
         return self.render_template("edit_form.html", flag=flag)
+
+    def on_create_flag(self, request):
+        form = request.form
+        self._storage.upsert({
+            "name": form["flag_name"],
+            "enabled": False,
+            "enabled_for_actors": None,
+            "enabled_for_percentage_of_actors": None,
+            "deleted": False,
+        })
+        return redirect("/")
 
     def error_404(self):
         response = self.render_template("404.html")

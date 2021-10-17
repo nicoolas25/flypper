@@ -48,9 +48,9 @@
           New flag
         </div>
         <div class="card-body p-2">
-          <form action="#">
+          <form action="./flags" method="post">
             <div class="mb-2">
-              <input type="text" class="form-control" id="flagName" placeholder="app.env.flag_name">
+              <input type="text" class="form-control" id="flagName" name="flag_name" placeholder="app.env.flag_name">
               <div class="form-text">This new flag will be disabled at first</div>
             </div>
             <button type="submit" class="btn btn-primary">Create a new flag</button>

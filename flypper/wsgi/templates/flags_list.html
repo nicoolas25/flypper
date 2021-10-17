@@ -6,7 +6,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for flag in flags %}
+    {% for flag in flags|sort(attribute="name") %}
     <tr>
       <td><code>{{ flag.name }}</code></td>
       <td>
