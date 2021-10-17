@@ -18,4 +18,4 @@ class Context:
 
     def is_enabled(self, flag_name: str, entries: Dict[str, str]) -> bool:
         flag = self.flags().get(flag_name, None)
-        return bool(flag and flag.is_enabled(self._common_entries | entries))
+        return bool(flag and flag.is_enabled({**self._common_entries, **entries}))
