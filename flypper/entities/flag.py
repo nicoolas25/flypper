@@ -1,5 +1,7 @@
+from sys import version_info
 from hashlib import md5
-from typing import Dict, List, Optional, TypedDict
+from typing import Dict, List, Optional
+from typing_extensions import TypedDict
 
 class _EnabledForActors(TypedDict):
     actor_key: str
