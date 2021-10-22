@@ -116,4 +116,3 @@ class FlypperWebUI:
             None,
         )
         return flag
-
