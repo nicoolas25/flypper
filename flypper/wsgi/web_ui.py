@@ -1,4 +1,5 @@
 import os
+from typing import cast
 
 from jinja2 import Environment
 from jinja2 import FileSystemLoader
@@ -11,8 +12,8 @@ from werkzeug.utils import redirect
 from werkzeug.wrappers import Request
 from werkzeug.wrappers import Response
 
+from flypper.entities.flag import UnversionedFlagData
 from flypper.storage.abstract import AbstractStorage
-from flypper.storage.in_memory import InMemoryStorage
 
 def get_hostname(url):
     return url_parse(url).netloc
@@ -31,18 +32,52 @@ class FlypperWebUI:
         self.url_map = Map(
             [
                 Rule("/", endpoint="index", methods=["GET"]),
+                Rule("/new", endpoint="create_flag", methods=["POST"]),
                 Rule("/edit_form", endpoint="edit_form", methods=["GET"]),
                 Rule("/edit", endpoint="edit", methods=["POST"]),
-                Rule("/flags", endpoint="create_flag", methods=["POST"]),
+                Rule("/soft_delete", endpoint="soft_delete", methods=["POST"]),
+                Rule("/reactivate", endpoint="reactivate", methods=["POST"]),
+                Rule("/delete", endpoint="delete", methods=["POST"]),
             ]
         )
 
     def on_index(self, request):
-        return self.render_template("index.html", flags=self._storage.list())
+        flags = self._storage.list()
+        if not request.args.get("deleted", False):
+            return self.render_template(
+                "index.html",
+                flags=[flag for flag in flags if not flag.is_deleted],
+            )
+        else:
+            return self.render_template(
+                "deleted.html",
+                flags=[flag for flag in flags if flag.is_deleted],
+            )
+
+    def on_create_flag(self, request):
+        form = request.form
+        self._storage.upsert({
+            "name": form["flag_name"],
+            "enabled": False,
+            "enabled_for_actors": None,
+            "enabled_for_percentage_of_actors": None,
+            "deleted": False,
+        })
+        return redirect("/")
+
+    def on_edit_form(self, request):
+        flag = self._fetch_flag(flag_name=request.args.get("flag_name", None))
+        if not flag:
+            return self.error_404()
+
+        return self.render_template("edit_form.html", flag=flag)
 
     def on_edit(self, request):
-        print(request.form)
         form = request.form
+        flag = self._fetch_flag(flag_name=form["flag_name"])
+        if not flag:
+            return self.error_404()
+
         self._storage.upsert({
             "name": form["flag_name"],
             "enabled": form.get("enabled", "off") == "on",
@@ -58,27 +93,39 @@ class FlypperWebUI:
                 "actor_key": form["enabled_for_percentage_of_actors_key"],
                 "percentage": float(form["enabled_for_percentage_of_actors_percentage"]),
             } if form.get("enabled_for_percentage_of_actors", "off") == "on" else None,
-            "deleted": False,
+            "deleted": flag.is_deleted,
         })
-        return redirect("/")
+        if flag.is_deleted:
+            return redirect("/?deleted=1")
+        else:
+            return redirect("/")
 
-    def on_edit_form(self, request):
+    def on_soft_delete(self, request):
         flag = self._fetch_flag(flag_name=request.args.get("flag_name", None))
         if not flag:
             return self.error_404()
 
-        return self.render_template("edit_form.html", flag=flag)
-
-    def on_create_flag(self, request):
-        form = request.form
-        self._storage.upsert({
-            "name": form["flag_name"],
-            "enabled": False,
-            "enabled_for_actors": None,
-            "enabled_for_percentage_of_actors": None,
-            "deleted": False,
-        })
+        self._storage.upsert(cast(UnversionedFlagData, {
+            **flag.data,
+            "deleted": True,
+        }))
         return redirect("/")
+
+    def on_reactivate(self, request):
+        flag = self._fetch_flag(flag_name=request.args.get("flag_name", None))
+        if not flag:
+            return self.error_404()
+
+        self._storage.upsert(cast(UnversionedFlagData, {
+            **flag.data,
+            "deleted": False,
+        }))
+        return redirect("/")
+
+    def on_delete(self, request):
+        flag_name=request.args.get("flag_name", None)
+        self._storage.delete(flag_name=flag_name)
+        return redirect("/?deleted=1")
 
     def error_404(self):
         response = self.render_template("404.html")

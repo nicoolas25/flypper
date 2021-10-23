@@ -9,10 +9,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" href="./">Active flags</a>
+          <a class="nav-link" href="./">Active flags</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="./?deleted=1">Deleted flags</a>
+          <a class="nav-link active" href="./?deleted=1">Deleted flags</a>
         </li>
       </ul>
     </div>
@@ -21,24 +21,10 @@
 <div class="container">
   <div class="card mt-3">
     <div class="card-header">
-      Active flags
+      Deleted flags
     </div>
     <div class="card-body p-1">
       {% include 'flags_list.html' %}
-    </div>
-  </div>
-  <div class="card mt-2">
-    <div class="card-header">
-      New flag
-    </div>
-    <div class="card-body p-2">
-      <form action="./flags" method="post">
-        <div class="mb-2">
-          <input type="text" class="form-control" id="flagName" name="flag_name" placeholder="app.env.flag_name">
-          <div class="form-text">This new flag will be disabled at first</div>
-        </div>
-        <button type="submit" class="btn btn-primary">Create a new flag</button>
-      </form>
     </div>
   </div>
 </div>

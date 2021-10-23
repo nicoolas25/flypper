@@ -113,7 +113,40 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close without saving</button>
+      {% if flag.is_deleted %}
+      <button
+        type="button"
+        class="btn btn-danger"
+        hx-post="./delete?flag_name={{ flag.name }}"
+        hx-target="body"
+        hx-trigger="click"
+        hx-confirm="Are you sure you wish to delete this flag forever?"
+      >
+        Delete for good
+      </button>
+      <button
+        type="button"
+        class="btn btn-success"
+        hx-post="./reactivate?flag_name={{ flag.name }}"
+        hx-target="body"
+        hx-trigger="click"
+        hx-confirm="Are you sure you wish to un-delete this flag?"
+      >
+        Reactivate
+      </button>
+      {% else %}
+      <button
+        type="button"
+        class="btn btn-danger"
+        hx-post="./soft_delete?flag_name={{ flag.name }}"
+        hx-target="body"
+        hx-trigger="click"
+        hx-confirm="Are you sure you wish to delete this flag?"
+      >
+        Soft-delete
+      </button>
+      {% endif %}
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       <button type="submit" class="btn btn-primary">Save this flag</button>
     </div>
   </form>

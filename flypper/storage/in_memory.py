@@ -28,3 +28,6 @@ class InMemoryStorage(AbstractStorage):
         )
         self._flags[name] = flag
         return flag
+
+    def delete(self, flag_name: str) -> None:
+        del self._flags[flag_name]

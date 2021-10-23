@@ -29,7 +29,7 @@ storage.upsert({
     "enabled": True,
     "enabled_for_actors": None,
     "enabled_for_percentage_of_actors": None,
-    "deleted": False,
+    "deleted": True,
 })
 storage.upsert({
     "name": "fr_api.prod.failover_for_payments",

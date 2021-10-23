@@ -11,3 +11,7 @@ class AbstractStorage(ABC):
     @abstractmethod
     def upsert(self, flag: UnversionedFlagData) -> Flag:
         raise NotImplementedError
+
+    @abstractmethod
+    def delete(self, flag_name: str) -> None:
+        raise NotImplementedError
