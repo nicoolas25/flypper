@@ -1,4 +1,4 @@
-# Flypper: feature flags, with an GUI
+# Flypper: feature flags, with a GUI
 
 Flypper is a lightweight feature flag package that ships with a WSGI interface.
 
@@ -15,21 +15,51 @@ You might want to install one of the following backends instead:
 * [`flypper-redis`](https://github.com/nicoolas25/flypper-redis) to store your flags in Redis
 * `flypper-sqlalchemy` to store your flags in a RDBMS using SQL-Alchemy (not yet released)
 
+## Why
+
+Feature flags can be a capital part on how a team ships software.
+
+I have a hard take delegating such a critical part to a third-party.
+Also, third-parties tends to grow a bigger feature set than the one I need,
+to have a per-seat pricing, and to ask for a [SSO tax](https://sso.tax/).
+
+Flypper aims at providing a simple feature flag library one could integrate
+directly to their application as a dependency. The feature set is purposedly
+small and will require some light work on your side to integrate.
+
+Differences compared to other similar libraries are:
+
+* A scrappy web UI to manage the flags
+* An architecture aimed at being used on backends and front-ends
+* An efficient caching mecanism to avoid roundtrip to the database
+
 ## Usage
 
-
 The library works with 3 components:
-1. A storage backend, storing and retrieving flags in a durable way
-2. A client, acting as an efficient in-memory cache for reading flags
-3. A context, making flags consistents during its lifespan
+1. A **storage** backend, storing and retrieving flags in a durable way
+2. A **client**, acting as an efficient in-memory cache for reading flags
+3. A **context**, making flags consistents during its lifespan
+
+![storage-client-context](https://user-images.githubusercontent.com/163953/138586365-4cb7e579-3467-447a-8c79-1985195d3d41.png)
 
 Here is an example:
 
 ```python
-from flypper import Client as Flypper
+from redis import Redis
 
+from flypper import Client as Flypper
+from flypper_redis.storage.redis import RedisStorage
+
+# Instanciate a *Storage*
+redis_storage = RedisStorage(
+    redis=Redis(host="localhost", port=6379, db=0),
+    prefix="flypper-demo",
+)
+
+# Instanciate a *Client*
 flypper = Flypper(storage=redis_storage)
 
+# Query flags' statuses within a *Context*
 with flypper(segment="professionals") as flags:
     if flags.is_enabled("graceful_degradation"):
         skip_that()
@@ -58,6 +88,22 @@ for instance like [here](https://eddmann.com/posts/creating-a-basic-auth-wsgi-mi
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
+
+### Upcoming feature ideas
+
+* Javascript SDK
+* Tracking flag usage efficiently
+* More storage backends
+
+## Credits
+
+Inspiration was heavily taken from the following projects.
+
+* [flipper](https://github.com/jnunemaker/flipper)
+* [unleash](https://github.com/Unleash/unleash)
+* [flipper-client](https://github.com/carta/flipper-client)
+
+Many thanks to their authors, maintainers, and contributors.
 
 ## License
 
