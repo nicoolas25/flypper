@@ -1,7 +1,6 @@
 from typing import cast
 
-from flypper.client import Client
-from flypper.entities.flag import UnversionedFlagData
+from flypper import Client, Context, UnversionedFlagData
 
 from tests.factories import create_flag_data
 from tests.fake_storage import FakeStorage
@@ -41,7 +40,14 @@ def test_client_refresh_updated_flags_during_sync():
     flag_data = create_flag_data(name="foo")
 
     storage.upsert(flag_data)
-    assert client.flags()["foo"].is_enabled(entries={})
+    assert client.flags()["foo"].is_enabled()
 
     storage.upsert(cast(UnversionedFlagData, {**flag_data, "enabled": False}))
-    assert not client.flags()["foo"].is_enabled(entries={})
+    assert not client.flags()["foo"].is_enabled()
+
+def test_call_creates_a_context():
+    storage = FakeStorage()
+    client = Client(storage=storage, ttl=0)
+    context = client(foo="bar")
+    assert isinstance(context, Context)
+    assert context["foo"] == "bar"

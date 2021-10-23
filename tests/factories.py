@@ -1,4 +1,4 @@
-from flypper.entities.flag import UnversionedFlagData
+from flypper import UnversionedFlagData
 
 def create_flag_data(name) -> UnversionedFlagData:
     return {

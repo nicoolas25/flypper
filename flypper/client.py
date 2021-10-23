@@ -1,26 +1,32 @@
 from time import monotonic
-from typing import Callable, Dict
+from typing import Callable, Dict, TYPE_CHECKING
 
-from flypper.entities.flag import Flag
-from flypper.storage.abstract import AbstractStorage
+from flypper.context import Context
+
+if TYPE_CHECKING:
+    from flypper.entities.flag import Flag
+    from flypper.storage.abstract import AbstractStorage
 
 class Client:
     def __init__(
         self,
-        storage: AbstractStorage,
+        storage: "AbstractStorage",
         ttl: float = 5.0,
         time_fn: Callable[[], float] = monotonic,
     ):
-        self._storage: AbstractStorage = storage
+        self._storage: "AbstractStorage" = storage
         self._ttl: float = ttl
         self._last_version: int = 0
         self._next_sync: float = 0
-        self._flags: Dict[str, Flag] = {}
+        self._flags: Dict[str, "Flag"] = {}
         self._time_fn: Callable[[], float] = time_fn
 
-    def flags(self) -> Dict[str, Flag]:
+    def flags(self) -> Dict[str, "Flag"]:
         self._sync()
         return self._flags
+
+    def __call__(self, **entries: str) -> Context:
+        return Context(client=self, entries=entries)
 
     def _sync(self):
         now = self._time_fn()

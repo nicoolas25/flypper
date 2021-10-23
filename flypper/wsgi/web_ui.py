@@ -1,5 +1,5 @@
 import os
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 from jinja2 import Environment
 from jinja2 import FileSystemLoader
@@ -12,15 +12,12 @@ from werkzeug.utils import redirect
 from werkzeug.wrappers import Request
 from werkzeug.wrappers import Response
 
-from flypper.entities.flag import UnversionedFlagData
-from flypper.storage.abstract import AbstractStorage
-
-def get_hostname(url):
-    return url_parse(url).netloc
-
+if TYPE_CHECKING:
+    from flypper.entities.flag import UnversionedFlagData
+    from flypper.storage.abstract import AbstractStorage
 
 class FlypperWebUI:
-    def __init__(self, storage: AbstractStorage):
+    def __init__(self, storage: "AbstractStorage"):
         self._storage = storage
         self.jinja_env = Environment(
             loader=FileSystemLoader(
@@ -28,7 +25,7 @@ class FlypperWebUI:
             ),
             autoescape=True,
         )
-        self.jinja_env.filters["hostname"] = get_hostname
+        self.jinja_env.filters["hostname"] = lambda url: url_parse(url).netloc
         self.url_map = Map(
             [
                 Rule("/", endpoint="index", methods=["GET"]),
@@ -105,7 +102,7 @@ class FlypperWebUI:
         if not flag:
             return self.error_404()
 
-        self._storage.upsert(cast(UnversionedFlagData, {
+        self._storage.upsert(cast("UnversionedFlagData", {
             **flag.data,
             "deleted": True,
         }))
@@ -116,7 +113,7 @@ class FlypperWebUI:
         if not flag:
             return self.error_404()
 
-        self._storage.upsert(cast(UnversionedFlagData, {
+        self._storage.upsert(cast("UnversionedFlagData", {
             **flag.data,
             "deleted": False,
         }))

@@ -1,6 +1,6 @@
 from typing import List
 
-from flypper.entities.flag import Flag
+from flypper import Flag
 from flypper.storage.in_memory import InMemoryStorage
 
 class FakeStorage(InMemoryStorage):

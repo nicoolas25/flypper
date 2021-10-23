@@ -1,4 +1,3 @@
-from sys import version_info
 from hashlib import md5
 from typing import Dict, List, Optional
 from typing_extensions import TypedDict
@@ -29,7 +28,7 @@ class Flag:
         self.is_deleted: bool = self.data["deleted"]
         self.version: int = self.data["version"]
 
-    def is_enabled(self, entries: Dict[str, str]) -> bool:
+    def is_enabled(self, **entries: str) -> bool:
         return (
             self.is_deleted is False
             and self.data["enabled"]
