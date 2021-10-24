@@ -21,6 +21,9 @@ class Context:
         flag = self.flags().get(flag_name, None)
         return bool(flag and flag.is_enabled(**self._common_entries, **entries))
 
+    def is_disabled(self, flag_name: str, **entries: str) -> bool:
+        return not self.is_enabled(flag_name=flag_name, **entries)
+
     #
     # Use [] to get and set the context's entries
     #
