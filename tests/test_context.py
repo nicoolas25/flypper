@@ -10,8 +10,8 @@ def test_context_retrieves_at_most_once_from_client():
     client = Client(storage=storage, ttl=0)
     context = Context(client=client, entries={})
 
-    context.flags()
-    context.flags()
+    context.is_enabled("a")
+    context.is_enabled("b")
     assert storage.list_call_count == 1
 
 def test_context_saves_a_local_copy_of_the_flags():
