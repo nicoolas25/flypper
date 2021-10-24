@@ -76,7 +76,7 @@ The web UI acts as a client and only needs a storage:
 ```python
 from flypper.wsgi.web_ui import FlypperWebUI
 
-web_ui = FlypperWebUI(storage=redis_storage)
+flypper_web_ui = FlypperWebUI(storage=redis_storage)
 ```
 
 | Web UI |
@@ -85,6 +85,10 @@ web_ui = FlypperWebUI(storage=redis_storage)
 
 The web UI can then be mounted as you see fit,
 for instance via [`DispatcherMiddleware`](https://werkzeug.palletsprojects.com/en/2.0.x/middleware/dispatcher/).
+
+```python
+app = DispatcherMiddleware(app, {"/flypper": flypper_web_ui})
+```
 
 ⚠ Careful, you might need to wrap the `FlypperWebUI` with your own authentication layer,
 for instance like [here](https://eddmann.com/posts/creating-a-basic-auth-wsgi-middleware-in-python/).
