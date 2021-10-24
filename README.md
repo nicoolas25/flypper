@@ -40,7 +40,9 @@ The library works with 3 components:
 2. A **client**, acting as an efficient in-memory cache for reading flags
 3. A **context**, making flags consistents during its lifespan
 
-![storage-client-context](https://user-images.githubusercontent.com/163953/138586365-4cb7e579-3467-447a-8c79-1985195d3d41.png)
+| Components and their roles |
+|---|
+| ![storage-client-context](https://user-images.githubusercontent.com/163953/138587140-e133ec12-6776-4bee-b80f-851eac7cb6a9.png) |
 
 Here is an example:
 
@@ -77,6 +79,10 @@ from flypper.wsgi.web_ui import FlypperWebUI
 web_ui = FlypperWebUI(storage=redis_storage)
 ```
 
+| Web UI |
+|---|
+| ![web-ui](https://user-images.githubusercontent.com/163953/138586961-d3cb5653-8713-4e3f-a60b-207bc5913a15.png) |
+
 The web UI can then be mounted as you see fit,
 for instance via [`DispatcherMiddleware`](https://werkzeug.palletsprojects.com/en/2.0.x/middleware/dispatcher/).
 
@@ -89,10 +95,16 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
+### Work in progress you can contribute to
+
+* Testing the web UI with [pytest and selenium](https://pytest-selenium.readthedocs.io/en/latest/user_guide.html)
+* Better support prefixes within the web UI, so redirections work
+* Write tutorials and recipes in the `docs/`
+
 ### Upcoming feature ideas
 
 * Javascript SDK
-* Tracking flag usage efficiently
+* Tracking flags usage efficiently
 * More storage backends
 
 ## Credits
