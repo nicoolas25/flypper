@@ -28,13 +28,13 @@ class FlypperWebUI:
         self.jinja_env.filters["hostname"] = lambda url: url_parse(url).netloc
         self.url_map = Map(
             [
-                Rule("/", endpoint="index", methods=["GET"]),
-                Rule("/new", endpoint="create_flag", methods=["POST"]),
-                Rule("/edit_form", endpoint="edit_form", methods=["GET"]),
-                Rule("/edit", endpoint="edit", methods=["POST"]),
-                Rule("/soft_delete", endpoint="soft_delete", methods=["POST"]),
-                Rule("/reactivate", endpoint="reactivate", methods=["POST"]),
-                Rule("/delete", endpoint="delete", methods=["POST"]),
+                Rule("/flypper/", endpoint="index", methods=["GET"]),
+                Rule("/flypper/new", endpoint="create_flag", methods=["POST"]),
+                Rule("/flypper/edit_form", endpoint="edit_form", methods=["GET"]),
+                Rule("/flypper/edit", endpoint="edit", methods=["POST"]),
+                Rule("/flypper/soft_delete", endpoint="soft_delete", methods=["POST"]),
+                Rule("/flypper/reactivate", endpoint="reactivate", methods=["POST"]),
+                Rule("/flypper/delete", endpoint="delete", methods=["POST"]),
             ]
         )
 
@@ -60,7 +60,7 @@ class FlypperWebUI:
             "enabled_for_percentage_of_actors": None,
             "deleted": False,
         })
-        return redirect("/")
+        return redirect("/flypper/")
 
     def on_edit_form(self, request):
         flag = self._fetch_flag(flag_name=request.args.get("flag_name", None))
@@ -93,9 +93,9 @@ class FlypperWebUI:
             "deleted": flag.is_deleted,
         })
         if flag.is_deleted:
-            return redirect("/?deleted=1")
+            return redirect("/flypper/?deleted=1")
         else:
-            return redirect("/")
+            return redirect("/flypper/")
 
     def on_soft_delete(self, request):
         flag = self._fetch_flag(flag_name=request.args.get("flag_name", None))
@@ -106,7 +106,7 @@ class FlypperWebUI:
             **flag.data,
             "deleted": True,
         }))
-        return redirect("/")
+        return redirect("/flypper/")
 
     def on_reactivate(self, request):
         flag = self._fetch_flag(flag_name=request.args.get("flag_name", None))
@@ -117,12 +117,12 @@ class FlypperWebUI:
             **flag.data,
             "deleted": False,
         }))
-        return redirect("/")
+        return redirect("/flypper/")
 
     def on_delete(self, request):
         flag_name=request.args.get("flag_name", None)
         self._storage.delete(flag_name=flag_name)
-        return redirect("/?deleted=1")
+        return redirect("/flypper/?deleted=1")
 
     def error_404(self):
         response = self.render_template("404.html")
