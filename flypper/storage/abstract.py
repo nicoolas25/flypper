@@ -10,7 +10,7 @@ class AbstractStorage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def upsert(self, flag: UnversionedFlagData) -> Flag:
+    def upsert(self, flag_data: UnversionedFlagData) -> Flag:
         """Inserts a flag, setting a 'version' and a 'updated_at' from an UnversionedFlagData."""
         raise NotImplementedError
 
