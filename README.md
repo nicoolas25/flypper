@@ -13,7 +13,7 @@ pip install flypper
 You might want to install one of the following backends instead:
 
 * [`flypper-redis`](https://github.com/nicoolas25/flypper-redis) to store your flags in Redis
-* `flypper-sqlalchemy` to store your flags in a RDBMS using SQL-Alchemy (not yet released)
+* [`flypper-sqlalchemy`](https://github.com/nicoolas25/flypper-sqlalchemy) to store your flags in a RDBMS using SQL-Alchemy (work in progress)
 
 ## Why
 
