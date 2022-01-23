@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "flypper"
-version = "0.1.0"
-description = ""
+version = "0.1.1"
+description = "Flypper is a lightweight feature flag package that ships with a WSGI interface."
+documentation= "https://github.com/nicoolas25/flypper"
+repository= "https://github.com/nicoolas25/flypper"
 authors = ["Nicolas Zermati <nicoolas25@gmail.com>"]
+readme = "README.md"
 packages = [
   { include = "flypper" },
   { include = "README.md" },
