@@ -17,7 +17,7 @@ You might want to install one of the following backends instead:
 
 ## Why
 
-Feature flags can be a capital part on how a team ships software.
+Feature flags can be instrumental to how a team ships software.
 
 I have a hard take delegating such a critical part to a third-party.
 Also, third-parties tends to grow a bigger feature set than the one I need,
