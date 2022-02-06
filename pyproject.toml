@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "flypper"
-version = "0.1.3"
+version = "0.1.4"
 description = "Flypper is a lightweight feature flag package that ships with a WSGI interface."
 documentation= "https://github.com/nicoolas25/flypper"
 repository= "https://github.com/nicoolas25/flypper"
@@ -14,7 +14,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-Werkzeug = "^2.0.0"
+Werkzeug = ">= 0.16.1"
 Jinja2 = ">= 2.0, < 4.0"
 
 [tool.poetry.dev-dependencies]
