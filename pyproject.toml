@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "flypper"
-version = "0.1.6"
+version = "0.1.7"
 description = "Flypper is a lightweight feature flag package that ships with a WSGI interface."
 documentation= "https://github.com/nicoolas25/flypper"
 repository= "https://github.com/nicoolas25/flypper"

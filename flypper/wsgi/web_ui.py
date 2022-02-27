@@ -20,10 +20,10 @@ class FlypperWebUI:
     def __init__(
         self,
         storage: "AbstractStorage",
-        url_prefix: str = "flypper",
-        route_prefix: str = "flypper",
+        url_prefix: str = "/flypper",
+        route_prefix: str = "/flypper",
     ):
-        self._prefix = url_prefix
+        self._url_prefix = url_prefix
         self._storage = storage
         self.jinja_env = Environment(
             loader=FileSystemLoader(
@@ -35,13 +35,13 @@ class FlypperWebUI:
         self.jinja_env.globals.update(path_for=self._path_for)
         self.url_map = Map(
             [
-                Rule(f"/{route_prefix}/", endpoint="index", methods=["GET"]),
-                Rule(f"/{route_prefix}/new", endpoint="create_flag", methods=["POST"]),
-                Rule(f"/{route_prefix}/edit_form", endpoint="edit_form", methods=["GET"]),
-                Rule(f"/{route_prefix}/edit", endpoint="edit", methods=["POST"]),
-                Rule(f"/{route_prefix}/soft_delete", endpoint="soft_delete", methods=["POST"]),
-                Rule(f"/{route_prefix}/reactivate", endpoint="reactivate", methods=["POST"]),
-                Rule(f"/{route_prefix}/delete", endpoint="delete", methods=["POST"]),
+                Rule(f"{route_prefix}/", endpoint="index", methods=["GET"]),
+                Rule(f"{route_prefix}/new", endpoint="create_flag", methods=["POST"]),
+                Rule(f"{route_prefix}/edit_form", endpoint="edit_form", methods=["GET"]),
+                Rule(f"{route_prefix}/edit", endpoint="edit", methods=["POST"]),
+                Rule(f"{route_prefix}/soft_delete", endpoint="soft_delete", methods=["POST"]),
+                Rule(f"{route_prefix}/reactivate", endpoint="reactivate", methods=["POST"]),
+                Rule(f"{route_prefix}/delete", endpoint="delete", methods=["POST"]),
             ]
         )
 
@@ -175,4 +175,4 @@ class FlypperWebUI:
 
     def _path_for(self, path: str):
         sep = "" if path.startswith("/") else "/"
-        return f"/{self._prefix}{sep}{path}"
+        return f"{self._url_prefix}{sep}{path}"
