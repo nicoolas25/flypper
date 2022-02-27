@@ -67,6 +67,7 @@ class FlypperWebUI:
             "enabled_for_percentage_of_actors": None,
             "deleted": False,
         })
+        self._storage.commit()
         return redirect("/flypper/")
 
     def on_edit_form(self, request):
@@ -99,6 +100,7 @@ class FlypperWebUI:
             } if form.get("enabled_for_percentage_of_actors", "off") == "on" else None,
             "deleted": flag.is_deleted,
         })
+        self._storage.commit()
         if flag.is_deleted:
             return redirect("/flypper/?deleted=1")
         else:
@@ -113,6 +115,7 @@ class FlypperWebUI:
             **flag.data,
             "deleted": True,
         }))
+        self._storage.commit()
         return redirect("/flypper/")
 
     def on_reactivate(self, request):
@@ -124,11 +127,13 @@ class FlypperWebUI:
             **flag.data,
             "deleted": False,
         }))
+        self._storage.commit()
         return redirect("/flypper/")
 
     def on_delete(self, request):
         flag_name=request.args.get("flag_name", None)
         self._storage.delete(flag_name=flag_name)
+        self._storage.commit()
         return redirect("/flypper/?deleted=1")
 
     def error_404(self):

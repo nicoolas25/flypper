@@ -20,3 +20,10 @@ class AbstractStorage(ABC):
 
         Note that soft-delete occurs by upserting a flag with a 'deleted=True' mapping."""
         raise NotImplementedError
+
+    def commit(self) -> None:
+        """For some storages, this can be used to persist changes that were made through upsert and delete.
+
+        The default behavior is to do nothing, so it's not needed for subclass to implement it.
+        """
+        pass
