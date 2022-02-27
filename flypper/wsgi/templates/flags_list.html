@@ -13,7 +13,7 @@
         <span
           data-bs-toggle="modal"
           data-bs-target="#editForm"
-          hx-get="/flypper/edit_form?flag_name={{ flag.name }}"
+          hx-get="{{ path_for("/edit_form?flag_name=" + flag.name) }}"
           hx-trigger="click"
           hx-target="#editFormContent"
         >

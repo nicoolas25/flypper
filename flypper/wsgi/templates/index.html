@@ -2,17 +2,17 @@
 {% block content %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container">
-    <a class="navbar-brand" href="/flypper/">Flypper</a>
+    <a class="navbar-brand" href="{{ path_for("/") }}">Flypper</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" href="/flypper/">Active flags</a>
+          <a class="nav-link active" href="{{ path_for("/") }}">Active flags</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/flypper/?deleted=1">Deleted flags</a>
+          <a class="nav-link" href="{{ path_for("/?deleted=1") }}">Deleted flags</a>
         </li>
       </ul>
     </div>
@@ -32,7 +32,7 @@
       New flag
     </div>
     <div class="card-body p-2">
-      <form action="/flypper/new" method="post">
+      <form action="{{ path_for("/new") }}" method="post">
         <div class="mb-2">
           <input type="text" class="form-control" id="flagName" name="flag_name" placeholder="app.env.flag_name">
           <div class="form-text">This new flag will be disabled at first</div>
